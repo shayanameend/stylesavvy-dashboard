@@ -1,26 +1,20 @@
-import type { FormEvent } from "react";
+"use client";
+
+import { useSession, signOut } from "next-auth/react";
 
 export default function Home() {
-	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
+	const { data: session } = useSession();
 
-		const formData = new FormData(event.currentTarget);
-		const data = Object.fromEntries(formData.entries());
-
-		console.log(data);
-	};
+	if (!session?.user) {
+		return <p>You are not logged in.</p>;
+	}
 
 	return (
-		<form onSubmit={handleSubmit}>
-			<label className="flex justify-evenly">
-				Email:
-				<input type="email" name="email" />
-			</label>
-			<br />
-			<label className="flex justify-evenly">
-				Password:
-				<input type="password" name="password" />
-			</label>
-		</form>
+		<div>
+			<p>Welcome, {session.user.name}!</p>
+			<button type="button" onClick={() => signOut()}>
+				Sign Out
+			</button>
+		</div>
 	);
 }
